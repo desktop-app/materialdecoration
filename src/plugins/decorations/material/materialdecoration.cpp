@@ -133,7 +133,12 @@ void QWaylandMaterialDecoration::paint(QPaintDevice *device)
 {
     // Set decoration colors of Fluid applications
     if (window()) {
-        QVariant bgColor = window()->property("__material_decoration_backgroundColor");
+        bool active = window()->handle()->isActive();
+
+        QVariant bgColor = active
+            ? window()->property("__material_decoration_backgroundColor")
+            : window()->property("__material_decoration_backgroundInactiveColor");
+
         if (bgColor.isValid()) {
             QColor color = bgColor.value<QColor>();
             if (color != m_backgroundColor) {
@@ -142,7 +147,10 @@ void QWaylandMaterialDecoration::paint(QPaintDevice *device)
             }
         }
 
-        QVariant fgColor = window()->property("__material_decoration_foregroundColor");
+        QVariant fgColor = active
+            ? window()->property("__material_decoration_foregroundColor")
+            : window()->property("__material_decoration_foregroundInactiveColor");
+
         if (fgColor.isValid()) {
             QColor color = fgColor.value<QColor>();
             if (color != m_textColor) {
